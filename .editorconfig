@@ -1,0 +1,21 @@
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+[Jenkinsfile]
+indent_style = tab
+indent_size = 4
+
+[*.{js,scss,jsx,json}]
+indent_style = tab
+indent_size = 4
+
+[{package.json,package-lock.json,.travis.yml}]
+indent_style = space
+indent_size = 2
+
+[ecs-task-definition-tpl.json]
+indent_style = space
+indent_size = 2
