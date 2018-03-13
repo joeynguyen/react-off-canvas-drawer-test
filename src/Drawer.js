@@ -6,7 +6,8 @@ class Drawer extends Component {
 	mainWindow = null
 
 	componentDidMount() {
-		this.mainWindow = document.querySelectorAll(this.props.mainWindowClass)[0];
+		const mainWindowSelector = document.querySelectorAll(this.props.mainWindowClass)[0];
+		this.mainWindow = mainWindowSelector;
 
 		if (typeof(this.mainWindow) !== 'undefined') {
 			this.mainWindow.style.transition = this.props.transition;
@@ -14,28 +15,47 @@ class Drawer extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if (this.props.isDrawerOpen !== nextProps.isDrawerOpen) {
-			if (typeof this.mainWindow !== 'undefined') {
-				const translateStyle = (nextProps.isDrawerOpen === true)
-					? `translateX(${this.props.width}px)`
-					: 'translateX(0px)';
+		const { isDrawerOpen, position, width } = this.props;
 
-				this.mainWindow.style.transform = translateStyle;
+		if (isDrawerOpen !== nextProps.isDrawerOpen) {
+			if (typeof this.mainWindow !== 'undefined') {
+				let transformStyle;
+				if (nextProps.isDrawerOpen === true) {
+					if (position === 'left') {
+						transformStyle = `translateX(${width}px)`
+					} else if (position === 'right') {
+						transformStyle = `translateX(-${width}px)`
+					}
+				} else {
+					transformStyle = 'translateX(0px)';
+				}
+
+				this.mainWindow.style.transform = transformStyle;
 			}
 		}
 	}
 
 	render() {
+		const { isDrawerOpen, position, width } = this.props;
 		let drawerClasses = "drawer";
 		let drawerStyles = {
-			width: this.props.width,
-			left: -this.props.width
+			width: width,
+			[position]: -width
 		};
-		if (this.props.isDrawerOpen) {
+		if (isDrawerOpen) {
 			drawerClasses += " drawer-open";
+
+			let transformStyle = '';
+			// we may have more positions in the future like 'top' and 'bottom'
+			if (position === 'left') {
+				transformStyle = `translateX(${width}px)`
+			} else if (position === 'right') {
+				transformStyle = `translateX(-${width}px)`
+			}
+
 			drawerStyles = {
 				...drawerStyles,
-				transform: 'translateX(240px)'
+				transform: transformStyle
 			}
 		}
 		return (
@@ -57,6 +77,7 @@ class Drawer extends Component {
 Drawer.defaultProps = {
 	isDrawerOpen: false,
 	mainWindowClass: '.ddc-document',
+	position: 'left',
 	transition: 'transform .2s ease-in-out, -webkit-transform .2s ease-in-out, -moz-transform .2s ease-in-out',
 	width: 240
 }
@@ -64,6 +85,8 @@ Drawer.defaultProps = {
 Drawer.propTypes = {
 	isDrawerOpen: PropTypes.bool,
 	mainWindow: PropTypes.string,
+	// we may have more positions in the future like 'top' and 'bottom'
+	position: PropTypes.oneOf('left', 'right'),
 	transition: PropTypes.string,
 	width: PropTypes.number
 }

@@ -32,6 +32,7 @@ class App extends Component {
 				<button onClick={this.openDrawer}>Show Modal</button>
 				<Drawer
 					isDrawerOpen={this.state.isDrawerOpen}
+					position="right"
 				>
 					<p>This text is portaled into Off Canvas!</p>
 					<button onClick={this.closeDrawer}>Close Modal</button>
